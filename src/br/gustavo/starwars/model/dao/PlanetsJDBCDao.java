@@ -1,4 +1,4 @@
-package br.gustavo.starwars.dao;
+package br.gustavo.starwars.model.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -7,10 +7,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.gustavo.starwars.bd.config.BDConfig;
-import br.gustavo.starwars.model.Planet;
+import br.gustavo.starwars.model.dao.bd.config.BDConfig;
+import br.gustavo.starwars.model.domain.Planet;
 
-public class PlanetsDao {
+public class PlanetsJDBCDao {
 
 	public List<Planet> list() throws Exception {
 		List<Planet> planets = new ArrayList<Planet>();
@@ -55,7 +55,7 @@ public class PlanetsDao {
 		return p;
 	}
 
-	public int add(Planet p) throws Exception {
+	public int save(Planet p) throws Exception {
 		int id = 0;
 		Connection conn = BDConfig.getConnection();
 		String sql = "insert into star_wars.planets (name,soil,weather) values (?,?,?)";
@@ -74,7 +74,7 @@ public class PlanetsDao {
 		return id;
 	}
 
-	public void edit(Planet p) throws Exception {
+	public void update(Planet p) throws Exception {
 		Connection conn = BDConfig.getConnection();
 		String sql = "update star_wars.planets set name= ? ,soil = ? ,weather = ? where id=?";
 		PreparedStatement stmt = conn.prepareStatement(sql);

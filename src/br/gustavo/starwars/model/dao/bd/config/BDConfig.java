@@ -1,4 +1,4 @@
-package br.gustavo.starwars.bd.config;
+package br.gustavo.starwars.model.dao.bd.config;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
