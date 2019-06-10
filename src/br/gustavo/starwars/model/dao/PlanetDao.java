@@ -9,6 +9,29 @@ import br.gustavo.starwars.exceptions.ErrorCode;
 import br.gustavo.starwars.model.domain.Planet;
 
 public class PlanetDao {
+	
+	public Planet save(Planet p) {
+		EntityManager em = JPAUtils.getEntityManager();
+
+		if (!planetIsValid(p)) {
+			throw new DAOException("Planeta com dados incompletos.", ErrorCode.BAD_REQUEST.getCode());
+		}
+
+		try {
+			em.getTransaction().begin();
+			em.persist(p);
+			em.getTransaction().commit();
+
+		} catch (RuntimeException ex) {
+			em.getTransaction().rollback();
+			throw new DAOException("Erro ao salvar planeta no espaço. " + ex.getMessage(),
+					ErrorCode.SERVER_ERROR.getCode());
+		} finally {
+			em.close();
+		}
+		return p;
+	}
+	
 	public List<Planet> list() {
 		EntityManager em = JPAUtils.getEntityManager();
 		List<Planet> planets = null;
@@ -48,27 +71,6 @@ public class PlanetDao {
 		return p;
 	}
 
-	public Planet save(Planet p) {
-		EntityManager em = JPAUtils.getEntityManager();
-
-		if (!planetIsValid(p)) {
-			throw new DAOException("Planeta com dados incompletos.", ErrorCode.BAD_REQUEST.getCode());
-		}
-
-		try {
-			em.getTransaction().begin();
-			em.persist(p);
-			em.getTransaction().commit();
-
-		} catch (RuntimeException ex) {
-			em.getTransaction().rollback();
-			throw new DAOException("Erro ao salvar planeta no espaço. " + ex.getMessage(),
-					ErrorCode.SERVER_ERROR.getCode());
-		} finally {
-			em.close();
-		}
-		return p;
-	}
 
 	public Planet update(Planet p){
 		EntityManager em = JPAUtils.getEntityManager();
@@ -127,7 +129,7 @@ public class PlanetDao {
 		}
 	}
 
-	private boolean planetIsValid(Planet p) {
+	public boolean planetIsValid(Planet p) {
 		try {
 			if ((p.getName().isEmpty()) || (p.getSoil().length() < 3) || (p.getWeather().length() < 1))
 				return false;
